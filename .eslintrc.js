@@ -27,12 +27,14 @@ module.exports = {
     'react-hooks'
   ],
   rules: {
+    "react/jsx-props-no-spreading": "off",
     'prettier/prettier' : 'error',
     'react/jsx-filename-extension': ['error', { extensions: ['.js', 'jsx']}],
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'import/prefer-default-export': 'off',
     'no-console': ['error', { allow: ['tron']}],
     'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'warn'
+    'react-hooks/exhaustive-deps': 'warn',
+    'no-param-reassign': 'off'
   },
 };
