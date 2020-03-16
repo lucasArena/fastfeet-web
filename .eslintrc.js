@@ -27,6 +27,7 @@ module.exports = {
     'react-hooks'
   ],
   rules: {
+    "camelcase" : "off",
     "react/jsx-props-no-spreading": "off",
     'prettier/prettier' : 'error',
     'react/jsx-filename-extension': ['error', { extensions: ['.js', 'jsx']}],

@@ -5,6 +5,7 @@ import TableContainer from '../../components/TableContainer';
 import { Table, StatusOrder, ActionButton } from './styles';
 
 import getColor from '../../utils/getColor';
+
 import api from '../../services/api';
 
 export default function Orders() {
@@ -22,9 +23,15 @@ export default function Orders() {
     async function loadOrders() {
       const response = await api.get('/orders');
       const formattedOrder = response.map(order => {
+        const [color, status] = getColor(
+          order.start_date,
+          order.end_date,
+          order.canceled_at
+        );
         return {
           ...order,
-          color: getColor(2),
+          color,
+          status,
         };
       });
       setOrders(formattedOrder);
@@ -63,7 +70,7 @@ export default function Orders() {
                 <td>Mogi das Cruzes</td>
                 <td>São Paulo</td>
                 <td>
-                  <StatusOrder color={order.color}>Entregue</StatusOrder>
+                  <StatusOrder color={order.color}>{order.status}</StatusOrder>
                 </td>
                 <td>
                   <button type="button" onClick={() => handleToggle(index)}>
