@@ -1,57 +1,96 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { MdEdit, MdDelete, MdRemoveRedEye } from 'react-icons/md';
 
 import SearchbarTable from '../../components/SearchbarTable';
 import TableContainer from '../../components/TableContainer';
 
-import { Table } from './styles';
+import { Table, ActionButton } from './styles';
+
+import api from '../../services/api';
 
 export default function Orders() {
+  const [isVisible, setIsVisible] = useState([]);
+  const [orders, setOrders] = useState([]);
+
+  function handleToggle(index) {
+    const toogleDisplay = isVisible.map(
+      (visible, i) => i === index && !visible
+    );
+    setIsVisible(toogleDisplay);
+  }
+
+  useEffect(() => {
+    async function loadOrders() {
+      const response = await api.get('/orders');
+      setOrders(response);
+
+      setIsVisible(
+        response.map(_ => {
+          return false;
+        })
+      );
+    }
+
+    loadOrders();
+  }, []);
+
   return (
-    // <div />
-    <TableContainer>
-      <SearchbarTable
-        title="Gerenciamento de encomandas"
-        placeholder="Buscar encomendas"
-        linkTo="/orders/create"
-        buttonText="Cadastrar"
-      />
+    <>
+      <TableContainer>
+        <SearchbarTable
+          title="Gerenciamento de encomandas"
+          placeholder="Buscar encomendas"
+          linkTo="/orders/create"
+          buttonText="Cadastrar"
+        />
 
-      <Table>
-        <thead>
-          <th>ID</th>
-          <th>Destinatário</th>
-          <th>Entregador</th>
-          <th>Cidade</th>
-          <th>Estado</th>
-          <th>Status</th>
-          <th>Ações</th>
-        </thead>
-        <tbody>
-          <tr>
-            <td>#01</td>
-            <td>Lucas Arena</td>
-            <td>Geovanna Cassará</td>
-            <td>Mogi das Cruzes</td>
-            <td>São Paulo</td>
-            <td>Em transporte</td>
-            <td>
-              <button type="button">...</button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>#02</td>
-            <td>Geovanna Cassará</td>
-            <td>Lucas Arena</td>
-            <td>Mogi das Cruzes</td>
-            <td>São Paulo</td>
-            <td>Em transporte</td>
-            <td>
-              <button type="button">...</button>
-            </td>
-          </tr>
-        </tbody>
-      </Table>
-    </TableContainer>
+        <Table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Destinatário</th>
+              <th>Entregador</th>
+              <th>Cidade</th>
+              <th>Estado</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((order, index) => (
+              <tr key={order.id}>
+                <td>#{order.id}</td>
+                <td>{order.recipient.name}</td>
+                <td>{order.deliveryguy.name}</td>
+                <td>Mogi das Cruzes</td>
+                <td>São Paulo</td>
+                <td>
+                  <span>Pendente</span>
+                </td>
+                <td>
+                  <button type="button" onClick={() => handleToggle(index)}>
+                    <span>...</span>
+                  </button>
+                  <ActionButton isVisible={isVisible[index]}>
+                    <button type="button">
+                      <MdRemoveRedEye color="#A47CEC" size={16} />
+                      <span>Vizualizar</span>
+                    </button>
+                    <button type="button">
+                      <MdEdit color="#4D85EE" size={16} />
+                      <span>Editar</span>
+                    </button>
+                    <button type="button">
+                      <MdDelete color="#DE403B" size={16} />
+                      <span>Excluir</span>
+                    </button>
+                  </ActionButton>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </TableContainer>
+    </>
   );
 }

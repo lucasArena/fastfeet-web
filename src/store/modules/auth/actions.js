@@ -5,10 +5,10 @@ export function signInRequest(email, password) {
   };
 }
 
-export function signInSuccess(user) {
+export function signInSuccess(user, token) {
   return {
     type: '@auth/SIGN_IN_SUCCESS',
-    payload: { user },
+    payload: { user, token },
   };
 }
 
@@ -18,7 +18,7 @@ export function signOut() {
   };
 }
 
-export function singFailure() {
+export function signFailure() {
   return {
     type: '@auth/SIGN_FAILURE',
   };

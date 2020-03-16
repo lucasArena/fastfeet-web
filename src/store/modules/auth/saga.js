@@ -14,14 +14,14 @@ function* signInRequest({ payload }) {
       password,
     });
 
-    const { user } = response;
+    const { user, token } = response;
 
-    yield put(Actions.signInSuccess(user));
+    yield put(Actions.signInSuccess(user, token));
     history.push('/orders');
   } catch (err) {
     console.tron.log(err);
     toast.error('Email ou senha inválidos');
-    yield put(Actions.singFailure());
+    yield put(Actions.signFailure());
   }
 }
 
@@ -29,7 +29,20 @@ function signOut() {
   history.push('/');
 }
 
+function setToken({ payload }) {
+  if (!payload) {
+    return;
+  }
+
+  const { token } = payload.auth;
+
+  if (token) {
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+  }
+}
+
 export default all([
+  takeLatest('persist/REHYDRATE', setToken),
   takeLatest('@auth/SIGN_IN_REQUEST', signInRequest),
   takeLatest('@auth/SIGN_OUT', signOut),
 ]);
