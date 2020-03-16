@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { MdEdit, MdDelete, MdRemoveRedEye } from 'react-icons/md';
 
-import SearchbarTable from '../../components/SearchbarTable';
 import TableContainer from '../../components/TableContainer';
+import { Table, StatusOrder, ActionButton } from './styles';
 
-import { Table, ActionButton } from './styles';
-
+import getColor from '../../utils/getColor';
 import api from '../../services/api';
 
 export default function Orders() {
@@ -22,7 +21,13 @@ export default function Orders() {
   useEffect(() => {
     async function loadOrders() {
       const response = await api.get('/orders');
-      setOrders(response);
+      const formattedOrder = response.map(order => {
+        return {
+          ...order,
+          color: getColor(2),
+        };
+      });
+      setOrders(formattedOrder);
 
       setIsVisible(
         response.map(_ => {
@@ -37,13 +42,6 @@ export default function Orders() {
   return (
     <>
       <TableContainer>
-        <SearchbarTable
-          title="Gerenciamento de encomandas"
-          placeholder="Buscar encomendas"
-          linkTo="/orders/create"
-          buttonText="Cadastrar"
-        />
-
         <Table>
           <thead>
             <tr>
@@ -65,7 +63,7 @@ export default function Orders() {
                 <td>Mogi das Cruzes</td>
                 <td>São Paulo</td>
                 <td>
-                  <span>Pendente</span>
+                  <StatusOrder color={order.color}>Entregue</StatusOrder>
                 </td>
                 <td>
                   <button type="button" onClick={() => handleToggle(index)}>

@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { darken } from 'polished';
 
 export const Table = styled.table.attrs({
   cellspacing: 0,
@@ -24,6 +25,35 @@ export const Table = styled.table.attrs({
   }
 `;
 
+export const StatusOrder = styled.span`
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  max-width: 120px;
+  border-radius: 30px;
+  background: ${props => props.color};
+  color: ${props => darken(0.45, props.color)};
+  font-size: 16px;
+  font-weight: bold;
+  position: relative;
+  margin-left: 10px;
+
+  &::before {
+    ${css`
+      content: '';
+      border-radius: 50%;
+      left: 5px;
+      top: calc(5px + 10%);
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      background: ${props => darken(0.45, props.color)};
+    `}
+  }
+`;
+
 export const ActionButton = styled.div`
   background: #fff;
   box-shadow: 0 1px 0 rgba(200, 215, 225, 0.5), 0 1px 2px #e9eff3;
@@ -37,17 +67,22 @@ export const ActionButton = styled.div`
 
   button {
     padding: 10px;
-    & + button {
-      margin-top: 5px;
-      border-top: 1px solid #eee;
-    }
-
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
 
     svg {
       margin-right: 5px;
+    }
+
+    & + button {
+      margin-top: 5px;
+      border-top: 1px solid #eee;
     }
   }
 `;
