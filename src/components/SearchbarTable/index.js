@@ -7,7 +7,7 @@ import { Container } from './styles';
 
 export default function SearchbarTable({
   title,
-  placeholder,
+  placeholderSearch,
   linkTo,
   buttonText,
 }) {
@@ -16,7 +16,7 @@ export default function SearchbarTable({
       <h1>{title}</h1>
 
       <div>
-        <input placeholder={placeholder} />
+        <input placeholder={placeholderSearch} />
         <Link to={linkTo}>
           <button type="button">
             <MdAdd size={24} color="#fff" />
@@ -30,7 +30,7 @@ export default function SearchbarTable({
 
 SearchbarTable.propTypes = {
   title: PropTypes.string.isRequired,
-  placeholder: PropTypes.string.isRequired,
+  placeholderSearch: PropTypes.string.isRequired,
   linkTo: PropTypes.string.isRequired,
   buttonText: PropTypes.string.isRequired,
 };

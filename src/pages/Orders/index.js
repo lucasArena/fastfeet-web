@@ -48,7 +48,12 @@ export default function Orders() {
 
   return (
     <>
-      <TableContainer>
+      <TableContainer
+        title="Gerenciamento de encomandas"
+        placeholderSearch="Buscar encomendas"
+        linkTo="/orders/create"
+        buttonText="Cadastrar"
+      >
         <Table>
           <thead>
             <tr>
@@ -67,8 +72,8 @@ export default function Orders() {
                 <td>#{order.id}</td>
                 <td>{order.recipient.name}</td>
                 <td>{order.deliveryguy.name}</td>
-                <td>Mogi das Cruzes</td>
-                <td>São Paulo</td>
+                <td>{order.recipient.city || '-'}</td>
+                <td>{order.recipient.state || '-'}</td>
                 <td>
                   <StatusOrder color={order.color}>{order.status}</StatusOrder>
                 </td>

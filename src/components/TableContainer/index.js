@@ -5,14 +5,20 @@ import SearchbarTable from '../SearchbarTable';
 
 import { Container } from './styles';
 
-export default function TableContainer({ children }) {
+export default function TableContainer({
+  children,
+  title,
+  placeholderSearch,
+  linkTo,
+  buttonText,
+}) {
   return (
     <Container>
       <SearchbarTable
-        title="Gerenciamento de encomandas"
-        placeholder="Buscar encomendas"
-        linkTo="/orders/create"
-        buttonText="Cadastrar"
+        title={title}
+        placeholderSearch={placeholderSearch}
+        linkTo={linkTo}
+        buttonText={buttonText}
       />
       {children}
     </Container>
