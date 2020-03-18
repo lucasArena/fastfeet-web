@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { MdEdit, MdDelete, MdRemoveRedEye } from 'react-icons/md';
 
 import TableContainer from '../../components/TableContainer';
-import { Table, StatusOrder, ActionButton } from './styles';
+import ActionButtons from '../../components/ActionButtons';
+import { StatusOrder } from './styles';
 
 import getColor from '../../utils/getColor';
 
@@ -11,12 +12,27 @@ import api from '../../services/api';
 export default function Orders() {
   const [isVisible, setIsVisible] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
 
   function handleToggle(index) {
     const toogleDisplay = isVisible.map(
       (visible, i) => i === index && !visible
     );
     setIsVisible(toogleDisplay);
+  }
+
+  function handleFilter({ target }) {
+    if (!target.value) {
+      setFilteredOrders(orders);
+      return;
+    }
+    const filterData = orders.filter(
+      o =>
+        o.id === parseInt(target.value, 10) ||
+        o.recipient.name.toLowerCase().includes(target.value.toLowerCase()) ||
+        o.deliveryguy.name.toLowerCase().includes(target.value.toLowerCase())
+    );
+    setFilteredOrders(filterData);
   }
 
   useEffect(() => {
@@ -35,6 +51,7 @@ export default function Orders() {
         };
       });
       setOrders(formattedOrder);
+      setFilteredOrders(formattedOrder);
 
       setIsVisible(
         response.map(_ => {
@@ -53,21 +70,20 @@ export default function Orders() {
         placeholderSearch="Buscar encomendas"
         linkTo="/orders/create"
         buttonText="Cadastrar"
+        handleFilter={handleFilter}
+        titleData={[
+          'ID',
+          'Destinatário',
+          'Entregador',
+          'Cidade',
+          'Estado',
+          'Status',
+          'Ações',
+        ]}
       >
-        <Table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Destinatário</th>
-              <th>Entregador</th>
-              <th>Cidade</th>
-              <th>Estado</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order, index) => (
+        <tbody>
+          {filteredOrders.length ? (
+            filteredOrders.map((order, index) => (
               <tr key={order.id}>
                 <td>#{order.id}</td>
                 <td>{order.recipient.name}</td>
@@ -81,7 +97,7 @@ export default function Orders() {
                   <button type="button" onClick={() => handleToggle(index)}>
                     <span>...</span>
                   </button>
-                  <ActionButton isVisible={isVisible[index]}>
+                  <ActionButtons isVisible={isVisible[index]}>
                     <button type="button">
                       <MdRemoveRedEye color="#A47CEC" size={16} />
                       <span>Vizualizar</span>
@@ -94,12 +110,16 @@ export default function Orders() {
                       <MdDelete color="#DE403B" size={16} />
                       <span>Excluir</span>
                     </button>
-                  </ActionButton>
+                  </ActionButtons>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={7}>Não existem registros</td>
+            </tr>
+          )}
+        </tbody>
       </TableContainer>
     </>
   );

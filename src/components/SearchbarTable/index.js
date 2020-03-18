@@ -10,13 +10,14 @@ export default function SearchbarTable({
   placeholderSearch,
   linkTo,
   buttonText,
+  handleFilter,
 }) {
   return (
     <Container>
       <h1>{title}</h1>
 
       <div>
-        <input placeholder={placeholderSearch} />
+        <input onChange={handleFilter} placeholder={placeholderSearch} />
         <Link to={linkTo}>
           <button type="button">
             <MdAdd size={24} color="#fff" />
@@ -33,4 +34,5 @@ SearchbarTable.propTypes = {
   placeholderSearch: PropTypes.string.isRequired,
   linkTo: PropTypes.string.isRequired,
   buttonText: PropTypes.string.isRequired,
+  handleFilter: PropTypes.func.isRequired,
 };
