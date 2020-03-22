@@ -15,6 +15,11 @@ export const Container = styled.div`
       color: #999;
     }
 
+    a {
+      display: ${props => (props.showButtons ? 'block' : 'none')};
+      text-decoration: none;
+    }
+
     button {
       display: flex;
       flex-direction: row;

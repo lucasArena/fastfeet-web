@@ -3,20 +3,24 @@ import { MdEdit, MdDelete, MdRemoveRedEye } from 'react-icons/md';
 
 import TableContainer from '../../components/TableContainer';
 import ActionButtons from '../../components/ActionButtons';
+import Modal from './Modal';
 import { StatusOrder } from './styles';
 
 import getColor from '../../utils/getColor';
 
 import api from '../../services/api';
+import history from '../../services/history';
 
 export default function Orders() {
+  const [page, setPage] = useState(1);
   const [isVisible, setIsVisible] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
 
   function handleToggle(index) {
     const toogleDisplay = isVisible.map(
-      (visible, i) => i === index && !visible
+      (visible, i) => i === index && !modalOpen && !visible
     );
     setIsVisible(toogleDisplay);
   }
@@ -37,7 +41,11 @@ export default function Orders() {
 
   useEffect(() => {
     async function loadOrders() {
-      const response = await api.get('/orders');
+      const response = await api.get('/orders', {
+        params: {
+          page,
+        },
+      });
       const formattedOrder = response.map(order => {
         const [color, status] = getColor(
           order.start_date,
@@ -61,7 +69,7 @@ export default function Orders() {
     }
 
     loadOrders();
-  }, []);
+  }, [page]);
 
   return (
     <>
@@ -70,6 +78,8 @@ export default function Orders() {
         placeholderSearch="Buscar encomendas"
         linkTo="/orders/create"
         buttonText="Cadastrar"
+        page={page}
+        setPage={setPage}
         handleFilter={handleFilter}
         titleData={[
           'ID',
@@ -98,11 +108,21 @@ export default function Orders() {
                     <span>...</span>
                   </button>
                   <ActionButtons isVisible={isVisible[index]}>
-                    <button type="button">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleToggle(index);
+                        setModalOpen(!modalOpen);
+                      }}
+                    >
                       <MdRemoveRedEye color="#A47CEC" size={16} />
                       <span>Vizualizar</span>
+                      <Modal isOpen={modalOpen} id={order.id} />
                     </button>
-                    <button type="button">
+                    <button
+                      type="button"
+                      onClick={() => history.push(`/orders/edit/${order.id}`)}
+                    >
                       <MdEdit color="#4D85EE" size={16} />
                       <span>Editar</span>
                     </button>

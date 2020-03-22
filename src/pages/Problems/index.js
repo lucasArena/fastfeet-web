@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { MdEdit, MdDelete } from 'react-icons/md';
 
+import { toast } from 'react-toastify';
 import TableContainer from '../../components/TableContainer';
 import ActionButtons from '../../components/ActionButtons';
+
+import Modal from './Modal';
 
 import api from '../../services/api';
 
 export default function Problems() {
+  const [page, setPage] = useState(1);
+  const [openModal, setOpenModal] = useState(false);
   const [isVisible, setIsVisible] = useState([]);
   const [problems, setProblems] = useState([]);
   const [filteredProblems, setFilteredProblems] = useState([]);
 
   function handleToggle(index) {
     const toogleDisplay = isVisible.map(
-      (visible, i) => i === index && !visible
+      (visible, i) => i === index && !openModal && !visible
     );
     setIsVisible(toogleDisplay);
   }
@@ -31,20 +36,34 @@ export default function Problems() {
     setFilteredProblems(filterData);
   }
 
-  useEffect(() => {
-    async function loadDeliveryguys() {
-      const response = await api.get('/order/problems');
-      setProblems(response);
-      setFilteredProblems(response);
+  const loadProblems = useCallback(async () => {
+    const response = await api.get('/order/problems', {
+      params: {
+        page,
+      },
+    });
+    setProblems(response);
+    setFilteredProblems(response);
 
-      setIsVisible(
-        response.map(_ => {
-          return false;
-        })
-      );
+    setIsVisible(
+      response.map(_ => {
+        return false;
+      })
+    );
+  }, [page]);
+
+  async function handleCancel(orderId) {
+    try {
+      await api.delete(`orders/${orderId}`);
+      toast.success('Pedido cancelado com sucesso');
+      loadProblems();
+    } catch (err) {
+      toast.error('Erro ao tentar cancelar o pedido');
     }
+  }
 
-    loadDeliveryguys();
+  useEffect(() => {
+    loadProblems();
   }, []);
 
   return (
@@ -54,6 +73,9 @@ export default function Problems() {
         placeholderSearch="Buscar por destinatários"
         linkTo="/receiver/create"
         buttonText="Cadastrar"
+        showButtons={false}
+        page={page}
+        setPage={setPage}
         handleFilter={handleFilter}
         titleData={['ID', 'Problema', 'Ações']}
       >
@@ -68,11 +90,21 @@ export default function Problems() {
                     <span>...</span>
                   </button>
                   <ActionButtons isVisible={isVisible[index]}>
-                    <button type="button">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpenModal(!openModal);
+                        handleToggle(index);
+                      }}
+                    >
                       <MdEdit color="#4D85EE" size={16} />
                       <span>Visualizar</span>
+                      <Modal id={problem.order_id} isOpen={openModal} />
                     </button>
-                    <button type="button">
+                    <button
+                      type="button"
+                      onClick={() => handleCancel(problem.order_id)}
+                    >
                       <MdDelete color="#DE403B" size={16} />
                       <span>Cancelar encomenda</span>
                     </button>

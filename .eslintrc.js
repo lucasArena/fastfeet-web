@@ -27,6 +27,7 @@ module.exports = {
     'react-hooks'
   ],
   rules: {
+    "react/forbid-prop-types": "off",
     "camelcase" : "off",
     "react/jsx-props-no-spreading": "off",
     'prettier/prettier' : 'error',

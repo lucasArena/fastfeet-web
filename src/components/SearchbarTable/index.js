@@ -10,10 +10,11 @@ export default function SearchbarTable({
   placeholderSearch,
   linkTo,
   buttonText,
+  showButtons,
   handleFilter,
 }) {
   return (
-    <Container>
+    <Container showButtons={showButtons}>
       <h1>{title}</h1>
 
       <div>
@@ -34,5 +35,10 @@ SearchbarTable.propTypes = {
   placeholderSearch: PropTypes.string.isRequired,
   linkTo: PropTypes.string.isRequired,
   buttonText: PropTypes.string.isRequired,
+  showButtons: PropTypes.bool,
   handleFilter: PropTypes.func.isRequired,
+};
+
+SearchbarTable.defaultProps = {
+  showButtons: true,
 };

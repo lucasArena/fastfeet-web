@@ -30,3 +30,14 @@ export const Table = styled.table.attrs({
     }
   }
 `;
+
+export const Footer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    cursor: pointer;
+  }
+`;

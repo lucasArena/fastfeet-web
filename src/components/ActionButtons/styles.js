@@ -7,7 +7,7 @@ export const Container = styled.div`
   min-width: 150px;
   left: calc(50% - 75px);
   margin-top: 20px;
-  z-index: 2;
+  z-index: 1;
   display: ${props => (props.isVisible ? 'flex' : 'none')};
   flex-direction: column;
 
